@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "211422957263",
+    "firebase_url": "https://authenticate-example.firebaseio.com",
+    "project_id": "authenticate-example",
+    "storage_bucket": "authenticate-example.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:211422957263:android:28613366924a30f846b1ba",
+        "android_client_info": {
+          "package_name": "com.example.firebaseauthenticationtwitter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "211422957263-e7env85n3umvasuit9s0i5b3320l8f44.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBMNrqiyce-VM3X44dE_eXLFagsy6jhs2I"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "211422957263-e7env85n3umvasuit9s0i5b3320l8f44.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

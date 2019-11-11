@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Firebase Authentication Twitter</string>
+
+    <string name="twitter_consumer_key" translatable="false">dy68m6OavPEITu5T1fgbIW8sV</string>
+    <string name="twitter_consumer_secret" translatable="false">YJq3L0LJ0aFTmM38c8KUaPcaQ0wTthjdyZsRTOkal4FOtoMGZu</string>
+</resources>
