@@ -68,7 +68,7 @@ public class LoginActivity extends AppCompatActivity {
         mTwitterButton.setCallback(new Callback<TwitterSession>() {
             @Override
             public void success(Result<TwitterSession> result) {
-                Toast.makeText(LoginActivity.this,"Signed in to twitter successful", Toast.LENGTH_LONG);
+                Toast.makeText(LoginActivity.this,"Signed in to twitter successful", Toast.LENGTH_LONG).show();
                 signInToFirebaseWithTwitterSession(result.data);
                 mTwitterButton.setVisibility(View.VISIBLE);
                 mIndeterminateProgressBar.setVisibility(View.VISIBLE);
@@ -78,7 +78,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void failure(TwitterException exception) {
-                Toast.makeText(LoginActivity.this, "Login failed. No internet or No Twitter app found on you phone", Toast.LENGTH_LONG);
+                Toast.makeText(LoginActivity.this, "Login failed. No internet or No Twitter app found on you phone", Toast.LENGTH_LONG).show();
                 getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
                 mIndeterminateProgressBar.setVisibility(View.GONE);
                 UpdateTwitterButton();
@@ -110,7 +110,7 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void updateUI() {
-        Toast.makeText(LoginActivity.this,"You're logged in", Toast.LENGTH_LONG);
+        Toast.makeText(LoginActivity.this,"You're logged in", Toast.LENGTH_LONG).show();
         Intent mainActivity = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(mainActivity);
         finish();
@@ -123,9 +123,9 @@ public class LoginActivity extends AppCompatActivity {
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        Toast.makeText(LoginActivity.this, "Signed in firebase twitter successful", Toast.LENGTH_LONG);
+                        Toast.makeText(LoginActivity.this, "Signed in firebase twitter successful", Toast.LENGTH_LONG).show();
                         if (!task.isSuccessful()){
-                            Toast.makeText(LoginActivity.this,"Auth firebase twitter failed", Toast.LENGTH_LONG);
+                            Toast.makeText(LoginActivity.this,"Auth firebase twitter failed", Toast.LENGTH_LONG).show();
                         }
                     }
                 });
