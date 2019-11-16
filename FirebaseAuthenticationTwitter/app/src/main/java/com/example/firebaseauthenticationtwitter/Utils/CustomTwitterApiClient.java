@@ -1,5 +1,6 @@
-package com.example.firebaseauthenticationtwitter;
+package com.example.firebaseauthenticationtwitter.Utils;
 
+import com.example.firebaseauthenticationtwitter.Service.TwitterService;
 import com.twitter.sdk.android.core.TwitterApiClient;
 import com.twitter.sdk.android.core.TwitterSession;
 

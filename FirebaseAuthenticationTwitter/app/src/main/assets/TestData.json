@@ -1,0 +1,45 @@
+{
+  "twitterID": "vanmihtien",
+  "data": [
+    {
+      "traitId": "big5_openness",
+      "name": "Openness",
+      "category": "personality",
+      "percentile": 0.8054516004154502,
+      "rawScore": null,
+      "significant": true
+    },
+    {
+      "traitId": "big5_conscientiousness",
+      "name": "Conscientiousness",
+      "category": "personality",
+      "percentile": 0.7530017514389516,
+      "rawScore": null,
+      "significant": true
+    },
+    {
+      "traitId": "big5_extraversion",
+      "name": "Extraversion",
+      "category": "personality",
+      "percentile": 0.8378560228680206,
+      "rawScore": null,
+      "significant": true
+    },
+    {
+      "traitId": "big5_agreeableness",
+      "name": "Agreeableness",
+      "category": "personality",
+      "percentile": 0.9154104259356679,
+      "rawScore": null,
+      "significant": true
+    },
+    {
+      "traitId": "big5_neuroticism",
+      "name": "Emotional range",
+      "category": "personality",
+      "percentile": 0.65272946502118,
+      "rawScore": null,
+      "significant": true
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-package com.example.firebaseauthenticationtwitter;
+package com.example.firebaseauthenticationtwitter.Service;
 
 import com.twitter.sdk.android.core.models.User;
 
