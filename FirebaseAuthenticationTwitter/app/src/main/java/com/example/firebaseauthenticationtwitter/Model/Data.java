@@ -1,9 +1,5 @@
 package com.example.firebaseauthenticationtwitter.Model;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.github.mikephil.charting.data.RadarEntry;
 
 import java.util.ArrayList;
@@ -12,9 +8,18 @@ import java.util.List;
 import java.util.Map;
 
 public class Data {
-	private List<DataItem> dataItems = new ArrayList<>();
-	private String twitterID = "";
+	private List<DataItem> dataItems;
+	private TwitterUser twitter;
 
+	public Data(){
+		dataItems = new ArrayList<>();
+		twitter = TwitterUser.NONE_USER;
+	}
+
+	public Data(TwitterUser twitter, List<DataItem> dataItems) {
+		this.twitter = twitter;
+		this.dataItems = dataItems;
+	}
 
 	public void setDataItems(List<DataItem> dataItems){
 		this.dataItems = dataItems;
@@ -24,12 +29,12 @@ public class Data {
 		return dataItems;
 	}
 
-	public void setTwitterID(String twitterID){
-		this.twitterID = twitterID;
+	public TwitterUser getTwitter() {
+		return twitter;
 	}
 
-	public String getTwitterID(){
-		return twitterID;
+	public void setTwitter(TwitterUser twitter) {
+		this.twitter = twitter;
 	}
 
 	public Map<String,RadarEntry> getDataNeedChart(){
@@ -45,7 +50,7 @@ public class Data {
 		return 
 			"Data{" +
 			"dataItems = '" + dataItems + '\'' +
-			",twitterID = '" + twitterID + '\'' + 
+			",twitterID = '" + twitter + '\'' +
 			"}";
 		}
 }

@@ -11,8 +11,12 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.firebaseauthenticationtwitter.Model.Data;
+import com.example.firebaseauthenticationtwitter.Model.DataItem;
+import com.example.firebaseauthenticationtwitter.Model.TwitterUser;
 import com.example.firebaseauthenticationtwitter.R;
+import com.example.firebaseauthenticationtwitter.Service.IBMService;
 import com.example.firebaseauthenticationtwitter.Utils.CustomTwitterApiClient;
+import com.example.firebaseauthenticationtwitter.Utils.RetrofitFactory;
 import com.example.firebaseauthenticationtwitter.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
@@ -39,11 +43,13 @@ import com.twitter.sdk.android.core.models.User;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -57,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     private Button refreshButton;
 
     private Map<String,RadarEntry> dataNeedChartOfMe;
+    private Map<String,RadarEntry> dataNeedChartOfYou;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -114,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        Data data = loadData();
-        dataNeedChartOfMe = data.getDataNeedChart();
+        loadData();
         installRadarChart();
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                loadData();
                 setData();
             }
         });
@@ -148,12 +155,8 @@ public class MainActivity extends AppCompatActivity {
     private void installRadarChart(){
         radarChart.setBackgroundColor(Color.rgb(220, 240, 247));
 
-        radarChart.getDescription().setEnabled(true);
+//        radarChart.getDescription().setEnabled(true);
 
-        radarChart.setWebLineWidth(1f);
-        radarChart.setWebColor(Color.YELLOW);
-        radarChart.setWebLineWidthInner(1f);
-        radarChart.setWebColorInner(Color.LTGRAY);
         radarChart.setWebAlpha(100);
         radarChart.setTouchEnabled(false);
 
@@ -164,9 +167,10 @@ public class MainActivity extends AppCompatActivity {
         XAxis xAxis = radarChart.getXAxis();
 //        xAxis.setTypeface(tfLight);
         xAxis.setValueFormatter(new IndexAxisValueFormatter(dataNeedChartOfMe.keySet()));
-        xAxis.setTextSize(9f);
-        xAxis.setYOffset(0f);
-        xAxis.setXOffset(0f);
+        xAxis.setValueFormatter(new IndexAxisValueFormatter());
+//        xAxis.setTextSize(15f);
+//        xAxis.setYOffset(10f);
+//        xAxis.setXOffset(0f);
 
         Legend l = radarChart.getLegend();
         l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
@@ -189,22 +193,23 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<RadarEntry> entries2 = new ArrayList<>();
 
         entries1.addAll(dataNeedChartOfMe.values());
+        entries2.addAll(dataNeedChartOfYou.values());
 
-        RadarDataSet set1 = new RadarDataSet(entries1,"Last Week");
+        RadarDataSet set1 = new RadarDataSet(entries1,"Me");
         set1.setColor(Color.rgb(255, 131, 151));
         set1.setFillColor(Color.rgb(255, 219, 222));
         set1.setDrawFilled(true);
-        set1.setFillAlpha(180);
-        set1.setLineWidth(2f);
+//        set1.setFillAlpha(180);
+//        set1.setLineWidth(2f);
         set1.setDrawHighlightCircleEnabled(true);
         set1.setDrawHighlightIndicators(false);
 
-        RadarDataSet set2 = new RadarDataSet(entries2, "This Week");
-        set2.setColor(Color.rgb(196, 255, 138));
-        set2.setFillColor(Color.rgb(194, 213, 177));
+        RadarDataSet set2 = new RadarDataSet(entries1,"You");
+        set2.setColor(Color.rgb(255, 131, 151));
+        set2.setFillColor(Color.rgb(255, 219, 222));
         set2.setDrawFilled(true);
-        set2.setFillAlpha(180);
-        set2.setLineWidth(2f);
+//        set2.setFillAlpha(180);
+//        set2.setLineWidth(2f);
         set2.setDrawHighlightCircleEnabled(true);
         set2.setDrawHighlightIndicators(false);
 
@@ -214,7 +219,7 @@ public class MainActivity extends AppCompatActivity {
 
         RadarData data = new RadarData(sets);
 //        data.setValueTypeface(tfLight);
-        data.setValueTextSize(8f);
+        data.setValueTextSize(20f);
         data.setDrawValues(false);
         data.setValueTextColor(Color.WHITE);
 
@@ -225,14 +230,25 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private Data loadData(){
-        String json = Utils.getAssetJsonData(getApplicationContext());
-        Type type = new TypeToken<Data>(){}.getType();
-        Data data = new Gson().fromJson(json,type);
-        if (data != null){
-          return data;
-        }
-        Toast.makeText(MainActivity.this,"Data null",Toast.LENGTH_SHORT).show();
-        return new Data();
+    private void loadData(){
+
+        TwitterUser user = new TwitterUser("@realDonaldTrump");
+        Call<List<DataItem>> call = IBMService.getData(user);
+        call.enqueue(new Callback<List<DataItem>>() {
+            @Override
+            public void onResponse(Call<List<DataItem>> call, Response<List<DataItem>> response) {
+                if (response.body() != null){
+                    Toast.makeText(MainActivity.this,"Load data: success",Toast.LENGTH_SHORT).show();
+                    dataNeedChartOfYou = new Data(user,response.body()).getDataNeedChart();
+                }
+            }
+
+            @Override
+            public void onFailure(Call<List<DataItem>> call, Throwable t) {
+                dataNeedChartOfYou = new Data().getDataNeedChart();
+                Toast.makeText(MainActivity.this,"Load data: failed",Toast.LENGTH_SHORT).show();
+                t.printStackTrace();
+            }
+        });
     }
 }
