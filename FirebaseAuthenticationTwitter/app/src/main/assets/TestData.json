@@ -1,5 +1,7 @@
 {
-  "twitterID": "vanmihtien",
+  "twitter": {
+    "twitterId": "vanminhtien2"
+  },
   "dataItems": [
     {
       "traitId": "big5_openness",

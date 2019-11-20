@@ -15,8 +15,9 @@ import com.example.firebaseauthenticationtwitter.Model.DataItem;
 import com.example.firebaseauthenticationtwitter.Model.TwitterUser;
 import com.example.firebaseauthenticationtwitter.R;
 import com.example.firebaseauthenticationtwitter.Service.IBMService;
+import com.example.firebaseauthenticationtwitter.Service.IBMServiceFactory;
+import com.example.firebaseauthenticationtwitter.Service.OnDataLoaded;
 import com.example.firebaseauthenticationtwitter.Utils.CustomTwitterApiClient;
-import com.example.firebaseauthenticationtwitter.Utils.RetrofitFactory;
 import com.example.firebaseauthenticationtwitter.Utils.Utils;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.RadarChart;
@@ -40,18 +41,17 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.User;
 
-import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
-import retrofit2.Retrofit;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements OnDataLoaded {
 
     private Button logoutButton;
     private FirebaseAuth mAuth;
@@ -62,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
     private RadarChart radarChart;
     private Button refreshButton;
 
-    private Map<String,RadarEntry> dataNeedChartOfMe;
-    private Map<String,RadarEntry> dataNeedChartOfYou;
+    private Map<String,RadarEntry> dataNeedChartOfMe = new HashMap<>();
+    private Map<String,RadarEntry> dataNeedChartOfYou = new HashMap<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -121,13 +121,13 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        loadData();
+        loadData(this);
         installRadarChart();
 
         refreshButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                loadData();
+                loadData(MainActivity.this::onDataLoaded);
                 setData();
             }
         });
@@ -204,9 +204,9 @@ public class MainActivity extends AppCompatActivity {
         set1.setDrawHighlightCircleEnabled(true);
         set1.setDrawHighlightIndicators(false);
 
-        RadarDataSet set2 = new RadarDataSet(entries1,"You");
-        set2.setColor(Color.rgb(255, 131, 151));
-        set2.setFillColor(Color.rgb(255, 219, 222));
+        RadarDataSet set2 = new RadarDataSet(entries2,"You");
+        set2.setColor(Color.rgb(100, 131, 151));
+        set2.setFillColor(Color.rgb(100, 219, 222));
         set2.setDrawFilled(true);
 //        set2.setFillAlpha(180);
 //        set2.setLineWidth(2f);
@@ -230,25 +230,36 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private void loadData(){
+    private void loadData(OnDataLoaded onDataLoaded){
 
-        TwitterUser user = new TwitterUser("@realDonaldTrump");
-        Call<List<DataItem>> call = IBMService.getData(user);
+        TwitterUser user = new TwitterUser("@BillGates");
+        Call<List<DataItem>> call = IBMServiceFactory.getIBMService().getData(user);
         call.enqueue(new Callback<List<DataItem>>() {
             @Override
             public void onResponse(Call<List<DataItem>> call, Response<List<DataItem>> response) {
                 if (response.body() != null){
                     Toast.makeText(MainActivity.this,"Load data: success",Toast.LENGTH_SHORT).show();
-                    dataNeedChartOfYou = new Data(user,response.body()).getDataNeedChart();
+                    onDataLoaded.onDataLoaded(new Data(user,response.body()));
+                }else{
+                    onDataLoaded.onDataLoaded(new Data());
                 }
             }
 
             @Override
             public void onFailure(Call<List<DataItem>> call, Throwable t) {
-                dataNeedChartOfYou = new Data().getDataNeedChart();
+                onDataLoaded.onDataLoaded(new Data());
                 Toast.makeText(MainActivity.this,"Load data: failed",Toast.LENGTH_SHORT).show();
-                t.printStackTrace();
             }
         });
+
+        Type type = new TypeToken<Data>(){}.getType();
+        Data dataOfMe = new Gson().fromJson(Utils.getAssetJsonData(MainActivity.this,"TestData.json"),type);
+        dataNeedChartOfMe = dataOfMe.getDataNeedChart();
+        System.out.println("TIEN: " + dataNeedChartOfYou.toString());
+    }
+
+    @Override
+    public void onDataLoaded(Data data) {
+        dataNeedChartOfYou = data.getDataNeedChart();
     }
 }

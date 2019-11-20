@@ -7,10 +7,10 @@ import java.io.IOException;
 import java.io.InputStream;
 
 public class Utils {
-    public static String getAssetJsonData(Context context) {
+    public static String getAssetJsonData(Context context, String fileName) {
         String json;
         try {
-            InputStream is = context.getAssets().open("TestData.json");
+            InputStream is = context.getAssets().open(fileName);
             int size = is.available();
             byte[] buffer = new byte[size];
             is.read(buffer);
